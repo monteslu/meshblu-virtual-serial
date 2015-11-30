@@ -32,6 +32,7 @@ function sendLoop(ssp){
 function MeshbluSerialPort(skynetConnection, options) {
   this.checkInterval = CHECK_INTERVAL;
   this.sendInterval = SEND_INTERVAL;
+  this.isConnected = false;
 
   if(typeof options === 'string'){
     this.sendUuid = [options];
@@ -72,6 +73,10 @@ function MeshbluSerialPort(skynetConnection, options) {
       debug('subscribing to', uuid);
       self.skynet.subscribe({uuid: uuid, types: ['broadcast']}, function(ok){
         debug('subscribed to', uuid, ok);
+        if(!self.isConnected){
+          self.isConnected = true;
+          self.emit('open');
+        }
       });
     });
   }
